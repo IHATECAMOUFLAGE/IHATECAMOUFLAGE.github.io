@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eaglercraft Launcher</title>
+    <style>
+        :root {
+            --bg-main: #090a0f;
+            --surface-card: #12151e;
+            --surface-hover: #181c28;
+            --border-subtle: rgba(255, 255, 255, 0.07);
+            --border-active: rgba(255, 255, 255, 0.15);
+            
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            
+            --color-hacked: #ef4444;
+            --color-legit: #10b981;
+            --color-modded: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+        }
+
+        .launcher-wrapper {
+            max-width: 1140px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 3.5rem;
+        }
+
+        .launcher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }
+
+        .brand-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .category-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .category-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .indicator-hacked { background-color: var(--color-hacked); box-shadow: 0 0 10px var(--color-hacked); }
+        .indicator-legit { background-color: var(--color-legit); box-shadow: 0 0 10px var(--color-legit); }
+        .indicator-modded { background-color: var(--color-modded); box-shadow: 0 0 10px var(--color-modded); }
+
+        .category-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.75px;
+            color: var(--text-primary);
+        }
+
+        .client-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .client-card {
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: border-color 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .client-card:hover {
+            border-color: var(--border-active);
+            background-color: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.85rem;
+        }
+
+        .client-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .tag-hacked { background: rgba(239, 68, 68, 0.12); color: var(--color-hacked); border: 1px solid rgba(239, 68, 68, 0.25); }
+        .tag-legit { background: rgba(16, 185, 129, 0.12); color: var(--color-legit); border: 1px solid rgba(16, 185, 129, 0.25); }
+        .tag-modded { background: rgba(139, 92, 246, 0.12); color: var(--color-modded); border: 1px solid rgba(139, 92, 246, 0.25); }
+
+        .client-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .launch-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.65rem 0;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 6px;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .launch-link:hover {
+            background-color: #ffffff;
+            border-color: #ffffff;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="launcher-wrapper">
+
+        <header class="launcher-header">
+            <div>
+                <h1 class="brand-title">Eaglercraft Launcher</h1>
+                <p class="brand-subtitle">Select a client profile to initialize</p>
+            </div>
+        </header>
+
+        <!-- Hacked Clients -->
+        <section class="category-group">
+            <div class="category-header">
+                <span class="category-indicator indicator-hacked"></span>
+                <h2 class="category-title">Hacked Clients</h2>
+            </div>
+            <div class="client-grid">
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Galactic Client</span>
+                            <span class="tag tag-hacked">#1 Hacked</span>
+                        </div>
+                        <p class="client-info">Has over 250 customizable bypassing modules, clean UI, constantly updated, and trusted by tens of thousands of people.</p>
+                    </div>
+                    <a href="games/hackedClients/Galactic-Client-7.0.0.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">WurstX</span>
+                            <span class="tag tag-hacked">#2 Hacked</span>
+                        </div>
+                        <p class="client-info">The classic Wurst Client, but ported to Eaglercraft with 100+ semi-bypassing modules, trusted by millions upon millions of people.</p>
+                    </div>
+                    <a href="games/hackedClients/WurstX.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">AutoClient</span>
+                            <span class="tag tag-hacked">#3 Hacked</span>
+                        </div>
+                        <p class="client-info">Clean UI, 100+ modules, and OK bypassing modules, trusted by hundreds.</p>
+                    </div>
+                    <a href="games/hackedClients/AutoClientB3.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Death Client</span>
+                            <span class="tag tag-hacked">#4 Hacked</span>
+                        </div>
+                        <p class="client-info">Features 100+ semi-bypassing modules with a clean UI.</p>
+                    </div>
+                    <a href="games/hackedClients/deathclient.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">UwU Client</span>
+                            <span class="tag tag-hacked">#5 Hacked</span>
+                        </div>
+                        <p class="client-info">Features 40+ modules that are semi-bypassing with a customizable Click-GUI and customizable modules.</p>
+                    </div>
+                    <a href="games/hackedClients/UwU-client-b2-offline.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">JosiahCraft</span>
+                            <span class="tag tag-hacked">#5 Hacked</span>
+                        </div>
+                        <p class="client-info">Features 30+ modules that are semi-bypassing with a customizable Click-GUI and customizable modules. <i>Psssst, this is literally just dragonx client but it looks better</i></p>
+                    </div>
+                    <a href="games/hackedClients/UwU-client-b2-offline.html" class="launch-link">Launch Client</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Legit Clients -->
+        <section class="category-group">
+            <div class="category-header">
+                <span class="category-indicator indicator-legit"></span>
+                <h2 class="category-title">Legit Clients</h2>
+            </div>
+            <div class="client-grid">
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Flash Client</span>
+                            <span class="tag tag-legit">Reccomended (Low-end Devices)</span>
+                        </div>
+                        <p class="client-info">Features 60+ stable FPS, clean and customizable modules, and a really smooth GUI. Over 300+ modules.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/flash_client.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">EB Client</span>
+                            <span class="tag tag-legit">#1 Legit</span>
+                        </div>
+                        <p class="client-info">Features 60+ stable FPS, clean and customizable modules, and a really smooth GUI. Over 300+ modules.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/[LATEST] EB Client Nextgen CU6.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Astra Client</span>
+                            <span class="tag tag-legit">#1 Legit (Low-end devices)</span>
+                        </div>
+                        <p class="client-info">Features 120+ stable FPS, clean and customizable modules, and a really smooth GUI.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/astraclient.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Resent Client 5.0</span>
+                            <span class="tag tag-legit">#2 Legit</span>
+                        </div>
+                        <p class="client-info">Features a stable 60 FPS to 100 FPS, extremely clean modules, and clean GUI. Unique features like blocking animations, self nametag, customizable FOV effects, and more.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/resent5.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Resent Client 4.0</span>
+                            <span class="tag tag-legit">#3 Legit</span>
+                        </div>
+                        <p class="client-info">Features clean modules, a stable 60 FPS, and a clean GUI.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/Eaglercraft_IR_Resent4.0.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Pixel Client</span>
+                            <span class="tag tag-legit">#4 Legit</span>
+                        </div>
+                        <p class="client-info">Features a semi-stable 45 FPS to 60 FPS, and 30+ modules.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/Eaglercraft_IR_PixelClient_1.8.8.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Tuff Client</span>
+                            <span class="tag tag-legit">#5 Legit</span>
+                        </div>
+                        <p class="client-info">Features 30+ modules and a semi-stable FPS of 45 FPS to 60 FPS.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/Eaglercraft_IR_TuffClient_1.12.2wasm.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">Base Eaglercraft-X</span>
+                            <span class="tag tag-legit">Base</span>
+                        </div>
+                        <p class="client-info">Averages 60 fps, menus are laggy, not well optimized.</p>
+                    </div>
+                    <a href="./games/nonHackedClients/Eaglercraft_IR_TuffClient_1.12.2wasm.html" class="launch-link">Launch Client</a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Modded Clients -->
+        <section class="category-group">
+            <div class="category-header">
+                <span class="category-indicator indicator-modded"></span>
+                <h2 class="category-title">Modded Clients</h2>
+            </div>
+            <div class="client-grid">
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">StarLike Client</span>
+                            <span class="tag tag-modded">1.16+ (1.8.8 servers only)</span>
+                        </div>
+                        <p class="client-info">A modded 1.8.8 client that has 1.16 features in your worlds!</p>
+                    </div>
+                    <a href="./games/nonHackedClients/Eaglercraft_IR_StarLikeClient_0.4.2.html" class="launch-link">Launch Client</a>
+                </div>
+
+                <div class="client-card">
+                    <div>
+                        <div class="card-meta">
+                            <span class="client-name">1.20 Port</span>
+                            <span class="tag tag-modded">1.20 Mod</span>
+                        </div>
+                        <p class="client-info">A 1.20 minecraft port to eaglercraft!</p>
+                    </div>
+                    <a href="./games/nonHackedClients/Eaglercraft_IR_StarLikeClient_0.4.2.html" class="launch-link">Launch Client</a>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>
